@@ -1,4 +1,4 @@
-export const listUserPassDefault = [
+const listUserPassDefault = [
     {
         username: 'admin',
         password: 'admin'
@@ -68,7 +68,7 @@ export const listUserPassDefault = [
         password: '999999'
     },
 ]
-export const listUserPassInjection = [
+const listUserPassInjection = [
     {
         username: 'admin',
         password: `' or '1'='1`
@@ -86,3 +86,5 @@ export const listUserPassInjection = [
         password: `' or ' 1=1`
     },
 ]
+
+module.exports = { listUserPassDefault, listUserPassInjection }

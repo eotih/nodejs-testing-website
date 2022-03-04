@@ -1,39 +1,42 @@
 const puppeteer = require('puppeteer');
-const { listUserPassInjection, listUserPassDefault } = require('../../mocks/bruteforce.mocks');
+const { listUserPassInjection, listUserPassDefault } = require('../mocks/bruteforce.mocks');
 
-let browser = null;
-let page = null;
-let loginSuccessAccount = [];
-
-export const testLogin = async (req, res) => {
-    const { website, userId, passId, buttonId } = req.body; // nhận về từ client gửi lên
-    describe('Test login with listUserPassDefault', () => {
-        beforeAll(async () => {
-            browser = await puppeteer.launch({
-                headless: true,
-                slowMo: 80,
-                args: ['--no-sandbox', '--disable-setuid-sandbox']
+class LoginController {
+    async testLogin(req, res) {
+        let browser = null;
+        let page = null;
+        let loginSuccessAccount = [];
+        const { website, userId, passId, buttonId } = req.body; // nhận về từ client gửi lên
+        if (!website || !userId || !passId || !buttonId) {
+            res.json({
+                message: 'Missing params'
             });
-            page = await browser.newPage();
-            await page.goto(website);
-        }); // mở trình duyệt
-        afterAll(async () => {
-            await browser.close();
-        });
-        test('Test login with listUserPassDefault', async () => { // test login
-            for (let i = 0; i < listUserPassDefault.length; i++) {
-                const { username, password } = listUserPass[i];
-                await page.type(userId, username);
-                await page.type(passId, password);
-                await page.click(buttonId);
-                await page.waitFor(1000);
-                // if page has alert 
-                const title = await page.title();
-                expect(title).toBe('Login');
+            return;
+        }
+        // run website and type user/pass with userId and passId and click on buttonId
+        browser = await puppeteer.launch({ headless: false }); // khởi tạo browser
+        page = await browser.newPage(); // mở 1 trang mới
+        await page.goto(website); // goto website
+        for (let i = 0; i < listUserPassInjection.length; i++) {
+            const { username, password } = listUserPassInjection[i]; // get username and password from listUserPassInjection
+            await page.type(userId, username); // type username
+            await page.type(passId, password); // type password
+            await page.click(buttonId); // click login button
+            await page.waitForNavigation(); // wait for navigation
+            const title = await page.title(); // get title
+            // const errorMessage = await page.$('#lbErrorMsg'); // get error message
+            if (title !== 'Login Page') {
+                loginSuccessAccount.push({ username, password }); // print username and password if login success
+            } else {
+                await page.goto(website); // if fail, go to login page again
             }
-
+        }
+        res.json({
+            message: 'Success',
+            data: loginSuccessAccount
         });
-
-    });
-    res.json({ status: 200, message: 'Test login with listUserPassDefault success', data: loginSuccessAccount });
+        await browser.close(); // close page
+    }
 }
+
+module.exports = new LoginController();
