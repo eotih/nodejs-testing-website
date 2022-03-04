@@ -1,4 +1,5 @@
 const express = require("express");
+const bodyParser = require("body-parser");
 const cors = require("cors");
 const route = require("./routes");
 
@@ -7,6 +8,7 @@ const port = 5000;
 
 app.use(cors());
 app.use(express.json()); // gửi từ code javascript
+app.use(bodyParser.urlencoded({ extended: true })); // gửi từ client
 route(app);
 
 app.get("/", (req, res) => {

@@ -85,6 +85,19 @@ const listUserPassInjection = [
         username: `' or ' 1=1`,
         password: `' or ' 1=1`
     },
+    {
+        username: `' or '1 '='1`,
+        password: `' or '1 '='1`
+
+    },
+    {
+        username: `' or '1'=' 1`,
+        password: `' or '1'=' 1`
+    },
+    {
+        username: `' or '1'='1`,
+        password: `' or '1'='1`
+    }
 ]
 
 module.exports = { listUserPassDefault, listUserPassInjection }
