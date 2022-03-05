@@ -8,7 +8,7 @@ import Loadable from 'ui-component/Loadable';
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')));
 
 // utilities routing
-const UtilsTypography = Loadable(lazy(() => import('views/utilities/Typography')));
+const UtilsTypography = Loadable(lazy(() => import('views/utilities/TestLogin')));
 
 // ==============================|| MAIN ROUTING ||============================== //
 
